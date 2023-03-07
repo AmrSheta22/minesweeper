@@ -24,9 +24,11 @@ def find_squares(mask, last_square):
     squares = []
     numbers = []
     num_index = []
+
     hierarch= []
     count = 0
     if len(last_square) != 0:
+        count+=1
         squares.append(last_square)
     for contour, h in zip(contours, hierarchy[0]):
         # approximate the contour
@@ -40,6 +42,8 @@ def find_squares(mask, last_square):
             if h[2] != -1:
                 numbers.append(approx)
                 num_index.append(count)
+            else:
+                numbers.append(0)
             count+=1
     
     return squares, numbers, num_index
@@ -52,6 +56,7 @@ print(squares[0])
 def get_height_width(squares):
     # sort the squares by their y value
     squares = sorted(squares, key=lambda x: x[0][0][1], reverse=True)
+    
     # get the squares that are in the first row
     first_row = []
     for square in squares:
@@ -97,28 +102,43 @@ def add_last_square(squares):
 
 last_square = add_last_square(squares)
 cv2.drawContours(img, squares, -1, (122, 255, 0), 3)
-cv2.drawContours(img, numbers, -1, (219, 255, 23), 3)
+#cv2.drawContours(img, numbers, -1, (219, 255, 23), 3)
 cv2.imwrite("D:\\minesweeper\\minesweeper\\Untitled4.png", img)
 
 
 
-preds = []
-for number in numbers:
-    preds.append(knn.predict([cv2.resize(mask[number[0][0][1]:number[2][0][1], number[0][0][0]:number[2][0][0]], (27,27)).flatten()])[0])
+# preds = []
+# for number in numbers:
+#     preds.append(knn.predict([cv2.resize(mask[number[0][0][1]:number[2][0][1], number[0][0][0]:number[2][0][0]], (27,27)).flatten()])[0])
 # write each prediction on top of the square it is in
-for i, square in enumerate(numbers):
-    cv2.putText(img, str(preds[i]), (square[0][0][0], square[0][0][1]), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 0, 0), 2)
-cv2.imwrite("D:\\minesweeper\\minesweeper\\finished.png", img)
+# for i, square in enumerate(numbers):
+#     cv2.putText(img, str(preds[i]), (square[0][0][0], square[0][0][1]), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 0, 0), 2)
+# cv2.imwrite("D:\\minesweeper\\minesweeper\\finished.png", img)
 
 from game import make_hidden_grid
 squares, numbers, num_index = find_squares(mask, last_square)
-print(squares[0])
 height, width =get_height_width(squares)
-for i in num_index:
-    print(i)
-    axis = get_axis(i, width)
-    print(axis)
-hidden_grid =make_hidden_grid(height, height)
+# sort numbers depending on the square list y value
+# numbers = [x for _, x in sorted(zip(squares, numbers), key=lambda pair: pair[0][0][0][1], reverse=True)]
+
+for i, number in enumerate(numbers):
+    if type(number) != int:
+        print(i)
+        print(get_axis(i, width))
+# for i, square in enumerate(numbers):
+#     if type(square) != int:
+#         cv2.putText(img, str(i), (square[0][0][0], square[0][0][1]), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 0, 0), 2)
+for i, square in enumerate(squares):
+    cv2.putText(img, str(i), (square[0][0][0], square[0][0][1]), cv2.FONT_HERSHEY_SIMPLEX, .5, (255, 0, 0), 2)
+cv2.imwrite("D:\\minesweeper\\minesweeper\\finished.png", img)
+
+
+# for i in num_index:
+#     actual_index = i-2
+#     print(actual_index)
+#     print(get_axis(actual_index, width))
+
+hidden_grid =make_hidden_grid(width,height)
 
 
 
