@@ -145,31 +145,41 @@ def click(spot, user_view, hidden_grid):
                 click(i[1], user_view, hidden_grid)
         return hidden_grid
     elif user_view[spot[0], spot[1]] == -1:
-        return "You lost"
+        return "you impecil fool, you lost"
     else:
         hidden_grid[spot[0], spot[1]] = str(user_view[spot[0], spot[1]])
         OPENED.append(spot)
     return hidden_grid
-
-# main_grid = grid(10, 10, .16)
+def matrix_to_string(mat):
+    index = np.array([["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]])
+    x = np.concatenate((index, mat), axis=0)
+    index = np.append([" "],index)
+    x = np.concatenate((index.reshape(-1,1), x), axis=1)
+    s = [[str(e) for e in row] for row in x]
+    lens = [max(map(len, col)) for col in zip(*s)]
+    fmt = '\t'.join('{{:{}}}'.format(x) for x in lens)
+    table = [fmt.format(*row) for row in s]
+    print('\n\n'.join(table), end="\n\n")
+# main_grid = grid(10, 10, .10)
 # user_view = user_view_matrix(main_grid)
 # hidden_grid = make_hidden_grid(10, 10)
-# print("   0   1   2   3   4   5   6   7   8   9")
-# print(hidden_grid)
+# matrix_to_string(hidden_grid)
 # while True:
 #     x = input("Enter x coordinate: ")
 #     y = input("Enter y coordinate: ")
+#     if x == "q" or y == "q":
+#         break
 #     try:
 #         spot = (int(x), int(y))
 #     except:
 #         print("Enter a number")
 #         continue
-#     if x == "q" or y == "q":
-#         break
 #     if int(x) > hidden_grid.shape[0] or int(y) > hidden_grid.shape[1]:
 #         print("Enter a number within the grid")
 #         continue
-#     print("   0   1   2   3   4   5   6   7   8   9")
-#     print(click(spot, user_view, hidden_grid))
-
+#     mat = click(spot, user_view, hidden_grid)
+#     if type(mat) == str:
+#         print(mat)
+#         break
+#     matrix_to_string(mat)
 
