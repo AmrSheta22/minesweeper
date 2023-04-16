@@ -42,7 +42,6 @@ def is_it_corner(grid, spot):
 def check_around_corner(grid, spot):
     if is_it_corner(grid, spot)[1] == "top left":
         right = grid[spot[0], spot[1]+1]
-        print(grid[spot[0], spot[1]])
         lower = grid[spot[0]+1, spot[1]]
         lower_right = grid[spot[0]+1, spot[1]+1]
         return right + lower + lower_right
